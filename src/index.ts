@@ -3,21 +3,18 @@ import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import http from 'http';
+import { buildSchema } from 'type-graphql';
+import { FilmResolver } from './resolvers/Film';
 
 async function main() {
     const app = express();
 
     const apolloServer = new ApolloServer({
-        typeDefs: gql`
-            type Query {
-                hello: String
-            }
-        `,
-        resolvers: {
-            Query: {
-                hello: () => `Hello World`,
-            },
-        },
+        // 생성된 스키마와 그에 연결되어있는 리졸버를 통해 GraphQL 서버를 구성
+        schema: await buildSchema({
+            // 리졸버를 토대로 GraphQL 스키마를 자동으로 생성
+            resolvers: [FilmResolver],
+        }),
         plugins: [ApolloServerPluginLandingPageLocalDefault()],
     });
 
