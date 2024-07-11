@@ -15,7 +15,7 @@ export class Film {
     genre: string;
 
     @Field({ description: '영화 러닝 타임, minute' })
-    runningTime: number;
+    runningTime: number; // number 기본은 float
 
     @Field({ description: '영화 줄거리 및 설명' })
     description: string;
