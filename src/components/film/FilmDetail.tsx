@@ -1,20 +1,29 @@
 import { Box, Flex, Heading, Image, Tag, Text } from '@chakra-ui/react';
+import { FilmQuery } from '../../generated/graphql';
 
-export default function FilmDetail() {
+interface FilmDetailProps {
+    film?: FilmQuery['film'];
+}
+
+export default function FilmDetail({ film }: FilmDetailProps): React.ReactElement {
     return (
         <Flex>
             <Box>
-                <Image />
+                <Image src={film?.posterImg} />
             </Box>
 
             <Flex>
                 <Flex>
-                    <Tag>genre</Tag>
+                    <Tag>{film?.genre}</Tag>
                 </Flex>
-                <Heading>title release</Heading>
-                <Heading>subtitle</Heading>
-                <Text>director runningTime</Text>
-                <Text>description</Text>
+                <Heading>
+                    {film?.title} {film?.release}
+                </Heading>
+                <Heading>{film?.subtitle}</Heading>
+                <Text>
+                    {film?.director.name} {film?.runningTime}
+                </Text>
+                <Text>{film?.description}</Text>
             </Flex>
         </Flex>
     );
