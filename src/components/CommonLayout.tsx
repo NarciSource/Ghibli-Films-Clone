@@ -9,7 +9,7 @@ interface CommonLayoutProps {
 export default function CommonLayout({ bg, children }: CommonLayoutProps): React.ReactElement {
     return (
         <div>
-            <Flex maxW="960px" justify="center">
+            <Flex justify="center">
                 <Navbar />
             </Flex>
             <Box px={{ base: 4 }} pt="24" mx="auto" maxW="960px" minH="100vh" w="100%" bg={bg}>
