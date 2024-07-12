@@ -6,6 +6,7 @@ import { PaginatedFilms } from '../entities/PaginatedFilm';
 
 @Resolver(Film) // 인자: 오브젝트타입
 export class FilmResolver {
+    // 영화 리스트
     @Query(() => PaginatedFilms)
     films(
         @Arg('limit', () => Int, { nullable: true, defaultValue: 6 })
@@ -27,9 +28,19 @@ export class FilmResolver {
         return { films: [] };
     }
 
+    // 영화 리스트 안의 감독정보
     @FieldResolver(() => Director)
     director(@Root() parentFilm: Film): Director | undefined {
         return ghibliData.directors.find((director) => director.id === parentFilm.director_id);
+    }
+
+    // 영화 상세
+    @Query(() => Film, { nullable: true })
+    film(
+        @Arg('filmId', () => Int)
+        filmId: number,
+    ): Film | undefined {
+        return ghibliData.films.find((x) => x.id === filmId);
     }
 }
 
@@ -39,4 +50,6 @@ export class FilmResolver {
 //         cursor: Int
 //         films: [Film]
 //     }
+
+//     film: Film
 // }
