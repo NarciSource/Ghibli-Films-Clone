@@ -2,7 +2,7 @@ import { AspectRatio, Box, LinkBox, Image, Stack, Heading, useColorModeValue, Te
 import { FilmsQuery } from '../../generated/graphql';
 
 interface FilmCardProps {
-    film: FilmsQuery['films'][0];
+    film: FilmsQuery['films']['films'][0];
 }
 
 export default function FilmCard({ film }: FilmCardProps): React.ReactElement {

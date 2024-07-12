@@ -3,7 +3,10 @@ import { useFilmsQuery } from '../../generated/graphql';
 import FilmCard from './FilmCard';
 
 export default function FilmList(): JSX.Element {
-    const { data, loading, error } = useFilmsQuery();
+    const LIMIT = 6;
+    const { data, loading, error } = useFilmsQuery({
+        variables: { limit: LIMIT, cursor: 1 },
+    });
 
     if (error) return <p>{error.message}</p>;
 
@@ -12,7 +15,7 @@ export default function FilmList(): JSX.Element {
             {loading && new Array(6).fill(0).map((x, i) => <Skeleton key={i} height="400px" />)}
             {!loading &&
                 data &&
-                data.films.map((film) => (
+                data.films.films.map((film) => (
                     <Box key={film.id}>
                         {film.id}
                         <FilmCard film={film} />
