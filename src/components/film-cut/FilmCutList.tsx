@@ -2,6 +2,7 @@ import { Box, Image, LinkBox, LinkOverlay, SimpleGrid, Spinner, useDisclosure } 
 import { useCutsQuery } from '../../generated/graphql';
 import LazyLoad from 'react-lazyload';
 import FilmCutModal from './FilmCutModal';
+import { useState } from 'react';
 
 interface FilmCutListProps {
     filmId: number;
@@ -10,6 +11,11 @@ interface FilmCutListProps {
 export default function FilmCutList({ filmId }: FilmCutListProps): React.ReactElement {
     const { data, loading } = useCutsQuery({ variables: { filmId } });
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [selectedCutId, setSelectedCutId] = useState<number>(0);
+    const handleCutSelect = (cutId: number) => {
+        onOpen();
+        setSelectedCutId(cutId);
+    };
 
     return loading ? (
         <Box>
@@ -22,7 +28,7 @@ export default function FilmCutList({ filmId }: FilmCutListProps): React.ReactEl
                     <LazyLoad once key={cut.id} height="200px">
                         <LinkBox>
                             <Box>
-                                <LinkOverlay onClick={() => onOpen()}>
+                                <LinkOverlay onClick={() => handleCutSelect(cut.id)}>
                                     <Image src={cut.src} />
                                 </LinkOverlay>
                             </Box>
@@ -30,7 +36,7 @@ export default function FilmCutList({ filmId }: FilmCutListProps): React.ReactEl
                     </LazyLoad>
                 ))}
             </SimpleGrid>
-            {isOpen && <FilmCutModal open={isOpen} onClose={onClose} />}
+            {isOpen && <FilmCutModal open={isOpen} onClose={onClose} cutId={selectedCutId} />}
         </>
     );
 }
