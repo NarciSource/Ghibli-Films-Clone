@@ -34,7 +34,7 @@ export class Film {
 // type Film {
 //     id: Int!
 //     title: String
-//     subtilte: String
+//     subtitle: String
 //     genre: String!
 //     runningTime: Float!
 //     description: String!
