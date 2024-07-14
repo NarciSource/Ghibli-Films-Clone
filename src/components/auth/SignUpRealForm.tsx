@@ -37,7 +37,7 @@ export default function SignUpRealForm(): React.ReactElement {
     };
 
     return (
-        <Stack as="form" onSubmit={handleSubmit(onSubmit)}>
+        <Stack as="form" onSubmit={handleSubmit(onSubmit)} spacing={4}>
             {/* 필드 유효성 검사, isInvalid 값으로 판단 */}
             <FormControl isInvalid={!!errors.signUpInput?.email}>
                 {/* isInvalid = useForm의 errors값 */}
@@ -80,7 +80,7 @@ export default function SignUpRealForm(): React.ReactElement {
             </FormControl>
 
             <Divider />
-            <Button type="submit" isLoading={loading}>
+            <Button type="submit" isLoading={loading} colorScheme='teal'>
                 계정 생성
             </Button>
         </Stack>

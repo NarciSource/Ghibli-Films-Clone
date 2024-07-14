@@ -1,12 +1,12 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, useColorModeValue } from '@chakra-ui/react';
 import CommonLayout from '../components/CommonLayout';
 import SignUpForm from '../components/auth/SignUpForm';
 
 export default function SignUp(): React.ReactElement {
     return (
-        <Box>
+        <Box bg={useColorModeValue('gray.50', 'gray.800')}>
             <CommonLayout>
-                <Flex>
+                <Flex align="center" justify="center">
                     <SignUpForm />
                 </Flex>
             </CommonLayout>
