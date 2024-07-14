@@ -1,54 +1,7 @@
 import argon2 from 'argon2';
-import { InputType, Arg, Field, Mutation, Resolver, ObjectType } from 'type-graphql';
-import { IsEmail, IsString } from 'class-validator'; // 입력 필드 유효성 검사
+import { Arg, Mutation, Resolver } from 'type-graphql';
 import { User } from '../entities/User';
-
-@InputType()
-export class SignUpInput {
-    @Field()
-    @IsEmail()
-    email: string;
-
-    @Field()
-    @IsString()
-    username: string;
-
-    @Field()
-    @IsString()
-    password: string;
-}
-
-@InputType()
-export class LoginInput {
-    @Field()
-    @IsString()
-    emailOrUsername: string;
-
-    @Field()
-    @IsString()
-    password: string;
-}
-
-@ObjectType({ description: '필드 에러 타입' })
-export class FieldError {
-    @Field()
-    field: string;
-
-    @Field()
-    message: string;
-}
-
-@ObjectType({ description: '로그인 반환 데이터' })
-export class LoginResponse {
-    @Field(() => [FieldError], { nullable: true })
-    errors?: FieldError[];
-
-    @Field(() => User, { nullable: true })
-    user?: User;
-
-    @Field({ nullable: true })
-    accessToken?: string;
-}
+import { SignUpInput, LoginInput, LoginResponse } from './User.type';
 
 @Resolver(User)
 export default class UserResolver {
@@ -93,3 +46,21 @@ export default class UserResolver {
         return response;
     }
 }
+
+// --SDL--
+// type Mutation {
+//     user: {
+//         signup(signUpInput: SignUpInput!): {
+//             email: String
+//             username: String
+//             createdAt: String
+//             updatedAt: String
+//             id: Int
+//         }
+//         login(loginInput: LoginInput!): {
+//             errors: [FieldError]
+//             user: User
+//             accessToken: String
+//         }
+//     }
+// }
