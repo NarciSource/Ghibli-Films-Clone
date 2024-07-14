@@ -1,4 +1,5 @@
 import { DataSource } from 'typeorm';
+import { User } from '../entities/User';
 
 export const createDB = async (): Promise<DataSource> =>
     new DataSource({
@@ -10,5 +11,5 @@ export const createDB = async (): Promise<DataSource> =>
         password: process.env.MYSQL_PASSWORD,
         logging: !(process.env.NODE_ENV === 'production'),
         synchronize: true,
-        entities: [],
+        entities: [User],
     }).initialize();
