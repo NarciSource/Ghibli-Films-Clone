@@ -3,7 +3,7 @@ import { AuthenticationError } from 'apollo-server-core';
 import { IncomingHttpHeaders } from 'http';
 import { User } from '../entities/User';
 
-interface JwtVerifiedUser {
+export interface JwtVerifiedUser {
     userId: User['id'];
 }
 

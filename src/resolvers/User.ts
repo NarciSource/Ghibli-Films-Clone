@@ -1,11 +1,21 @@
 import argon2 from 'argon2';
-import { Arg, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { SignUpInput, LoginInput, LoginResponse } from './User.type';
 import { User } from '../entities/User';
 import { createAccessToken } from '../utils/jwt-auth';
+import { isAuthenticated } from '../middlewares/isAuthenticated';
 
 @Resolver(User)
 export class UserResolver {
+    @UseMiddleware(isAuthenticated)
+    @Query(() => User, { nullable: true })
+    async me(
+        @Ctx()
+        context,
+    ): Promise<User | undefined> {
+        return User.findOne({ where: { id: context.verifiedUser.userId } });
+    }
+
     @Mutation(() => User)
     async signUp(
         @Arg('signUpInput')
