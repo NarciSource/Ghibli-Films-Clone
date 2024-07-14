@@ -2,10 +2,10 @@ import argon2 from 'argon2';
 import { Arg, Mutation, Resolver } from 'type-graphql';
 import { SignUpInput, LoginInput, LoginResponse } from './User.type';
 import { User } from '../entities/User';
-import createAccessToken from '../utils/jwt-auth';
+import { createAccessToken } from '../utils/jwt-auth';
 
 @Resolver(User)
-export default class UserResolver {
+export class UserResolver {
     @Mutation(() => User)
     async signUp(
         @Arg('signUpInput')
