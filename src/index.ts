@@ -8,6 +8,7 @@ import { buildSchema } from 'type-graphql';
 import { FilmResolver } from './resolvers/Film';
 import { CutResolver } from './resolvers/Cut';
 import { createDB } from './db/db-client';
+import UserResolver from './resolvers/User';
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ async function main() {
         // 생성된 스키마와 그에 연결되어있는 리졸버를 통해 GraphQL 서버를 구성
         schema: await buildSchema({
             // 리졸버를 토대로 GraphQL 스키마를 자동으로 생성
-            resolvers: [FilmResolver, CutResolver],
+            resolvers: [FilmResolver, CutResolver, UserResolver],
         }),
         plugins: [ApolloServerPluginLandingPageLocalDefault()],
     });
