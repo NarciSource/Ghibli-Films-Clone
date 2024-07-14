@@ -33,7 +33,7 @@ export default class UserResolver {
         const user = await User.findOne({
             where: [{ email: emailOrUsername }, { username: emailOrUsername }],
         });
-        const isValid = await argon2.verify(user?.password, password);
+        const isValid = user && (await argon2.verify(user?.password, password));
 
         let response: typeof LoginResponse;
         if (isValid) {
