@@ -8,6 +8,7 @@ import {
     Input,
     FormErrorMessage,
     useToast,
+    useColorModeValue,
 } from '@chakra-ui/react';
 import { FieldError, LoginMutationVariables, useLoginMutation, UserWithToken } from '../../generated/graphql';
 import { useForm } from 'react-hook-form';
@@ -35,7 +36,7 @@ export default function LoginRealForm(): React.ReactElement {
                     setError((fieldForm + field) as Parameters<typeof setError>[0], { message });
                 }
                 if (data?.login as UserWithToken) {
-                    const { user, accessToken } = data?.login as UserWithToken;
+                    const { accessToken } = data?.login as UserWithToken;
 
                     localStorage.setItem('access_token', accessToken);
                     toast({ title: '환영합니다!', status: 'success' });
@@ -49,8 +50,8 @@ export default function LoginRealForm(): React.ReactElement {
     };
 
     return (
-        <Box>
-            <Stack as="form" onSubmit={handleSubmit(onSubmit)}>
+        <Box rounded="lg" bg={useColorModeValue('white', 'gray.700')} boxShadow="lg" p={8}>
+            <Stack as="form" onSubmit={handleSubmit(onSubmit)} spacing={4}>
                 <FormControl isInvalid={!!errors.loginInput?.emailOrUsername}>
                     <FormLabel>이메일 또는 아이디</FormLabel>
                     <Input
@@ -78,7 +79,7 @@ export default function LoginRealForm(): React.ReactElement {
 
                 <Divider />
 
-                <Button type="submit" isLoading={loading}>
+                <Button type="submit" isLoading={loading} colorScheme="teal">
                     로그인
                 </Button>
             </Stack>
