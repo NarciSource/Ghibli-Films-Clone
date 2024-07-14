@@ -2,6 +2,7 @@ import argon2 from 'argon2';
 import { Arg, Mutation, Resolver } from 'type-graphql';
 import { SignUpInput, LoginInput, LoginResponse } from './User.type';
 import { User } from '../entities/User';
+import createAccessToken from '../utils/jwt-auth';
 
 @Resolver(User)
 export default class UserResolver {
@@ -36,7 +37,9 @@ export default class UserResolver {
 
         let response: typeof LoginResponse;
         if (isValid) {
-            response = user;
+            // JWT 토큰 발급
+            const accessToken = createAccessToken(user);
+            response = { user, accessToken };
         } else if (user) {
             response = { field: 'password', message: '비밀번호가 틀렸습니다.' };
         } else {
@@ -47,7 +50,7 @@ export default class UserResolver {
 }
 
 // --SDL--
-// union LoginResponse = User | FieldError
+// union LoginResponse = UserWithToken | FieldError
 
 // type Mutation {
 //     user: {

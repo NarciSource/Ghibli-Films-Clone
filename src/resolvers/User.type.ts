@@ -1,7 +1,7 @@
 import { IsEmail, IsString } from 'class-validator'; // 입력 필드 유효성 검사
 import { Field, InputType, createUnionType } from 'type-graphql';
-import { User } from '../entities/User';
-import { FieldError } from '../entities/FieldError';
+import { FieldError } from '../entities/User.Error';
+import { UserWithToken } from '../entities/User.withToken';
 
 @InputType()
 export class SignUpInput {
@@ -32,10 +32,10 @@ export class LoginInput {
 export const LoginResponse = createUnionType({
     name: 'LoginResponse',
     description: '로그인 반환 데이터',
-    types: () => [User, FieldError] as const,
+    types: () => [UserWithToken, FieldError] as const,
     resolveType: (value) => {
-        if (value instanceof User) {
-            return User;
+        if ('user' in value) {
+            return UserWithToken;
         }
         if ('message' in value) {
             return FieldError;
