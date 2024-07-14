@@ -1,4 +1,5 @@
 import { Box, Heading, Stack, Text } from '@chakra-ui/react';
+import SignUpRealForm from './SignUpRealForm';
 
 export default function SignUpForm(): React.ReactElement {
     return (
@@ -8,7 +9,9 @@ export default function SignUpForm(): React.ReactElement {
                 <Text>환영합니다!</Text>
             </Stack>
 
-            <Box>입력창</Box>
+            <Box>
+                <SignUpRealForm />
+            </Box>
         </Stack>
     );
 }
