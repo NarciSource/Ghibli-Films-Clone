@@ -1,0 +1,15 @@
+mutation Login($loginInput: LoginInput!) {
+    login(loginInput: $loginInput) {
+        ... on FieldError {
+            field
+            message
+        }
+        ... on UserWithToken {
+            user {
+                id
+                username
+            }
+            accessToken
+        }
+    }
+}
