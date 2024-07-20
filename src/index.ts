@@ -13,7 +13,13 @@ async function main() {
 
     const apolloServer = await createApolloServer();
     await apolloServer.start();
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({
+        app,
+        cors: {
+            origin: [process.env.DOMAIN, 'https://studio.apollographql.com'],
+            credentials: true,
+        },
+    });
 
     const httpServer = http.createServer(app);
 

@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 import { SignUpInput, LoginInput, LoginResponse } from './User.type';
 import { User } from '../entities/User';
-import { createAccessToken } from '../utils/jwt-auth';
+import { createAccessToken, createRefreshToken, setRefreshTokenHeader } from '../utils/jwt-auth';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
 
 @Resolver(User)
@@ -38,6 +38,8 @@ export class UserResolver {
     async login(
         @Arg('loginInput')
         { emailOrUsername, password }: LoginInput,
+        @Ctx()
+        { res },
     ): Promise<typeof LoginResponse> {
         // 유저 확인
         const user = await User.findOne({
@@ -49,6 +51,10 @@ export class UserResolver {
         if (isValid) {
             // JWT 토큰 발급
             const accessToken = createAccessToken(user);
+            const refreshToken = createRefreshToken(user);
+
+            setRefreshTokenHeader(res, refreshToken);
+
             response = { user, accessToken };
         } else if (user) {
             response = { field: 'password', message: '비밀번호가 틀렸습니다.' };
