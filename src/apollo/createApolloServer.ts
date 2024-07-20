@@ -5,6 +5,8 @@ import { FilmResolver } from '../resolvers/Film';
 import { CutResolver } from '../resolvers/Cut';
 import { UserResolver } from '../resolvers/User';
 import { verifyAccessTokenFromReqHeaders } from '../utils/jwt-auth';
+import redis from '../redis/redis-client';
+import IContext from './IContext';
 
 export default async function createApolloServer(): Promise<ApolloServer> {
     return new ApolloServer({
@@ -14,10 +16,10 @@ export default async function createApolloServer(): Promise<ApolloServer> {
             resolvers: [FilmResolver, CutResolver, UserResolver],
         }),
         plugins: [ApolloServerPluginLandingPageLocalDefault()],
-        context: ({ req, res }) => {
+        context: ({ req, res }: IContext) => {
             // context에 인증값 추가
             const verified = verifyAccessTokenFromReqHeaders(req.headers);
-            return { req, res, verifiedUser: verified };
+            return { req, res, verifiedUser: verified, redis };
         },
     });
 }

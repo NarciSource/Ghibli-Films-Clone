@@ -4,6 +4,7 @@ import { SignUpInput, LoginInput, LoginResponse } from './User.type';
 import { User } from '../entities/User';
 import { createAccessToken, createRefreshToken, setRefreshTokenHeader } from '../utils/jwt-auth';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
+import IContext from '../apollo/IContext';
 
 @Resolver(User)
 export class UserResolver {
@@ -11,7 +12,7 @@ export class UserResolver {
     @Query(() => User, { nullable: true })
     async me(
         @Ctx()
-        context,
+        context: IContext,
     ): Promise<User | undefined> {
         return User.findOne({ where: { id: context.verifiedUser.userId } });
     }
@@ -39,7 +40,7 @@ export class UserResolver {
         @Arg('loginInput')
         { emailOrUsername, password }: LoginInput,
         @Ctx()
-        { res },
+        { res, redis }: IContext,
     ): Promise<typeof LoginResponse> {
         // 유저 확인
         const user = await User.findOne({
@@ -53,6 +54,9 @@ export class UserResolver {
             const accessToken = createAccessToken(user);
             const refreshToken = createRefreshToken(user);
 
+            // 리프레시 토큰 레디스 적재
+            await redis.set(String(user.id), refreshToken);
+            // 쿠키로 리프레시 토큰 전송
             setRefreshTokenHeader(res, refreshToken);
 
             response = { user, accessToken };
