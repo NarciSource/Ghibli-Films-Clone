@@ -10,7 +10,7 @@ export interface JwtVerifiedUser {
 
 export function createAccessToken(user: User): string {
     const userData: JwtVerifiedUser = { userId: user.id };
-    const accessToken = jwt.sign(userData, process.env.JWT_SECRET_KEY, { expiresIn: '30m' });
+    const accessToken = jwt.sign(userData, process.env.JWT_SECRET_KEY, { expiresIn: '10m' });
 
     return accessToken;
 }

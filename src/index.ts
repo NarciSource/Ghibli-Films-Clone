@@ -4,12 +4,17 @@ import http from 'http';
 import 'reflect-metadata';
 import { createDB } from './db/db-client';
 import createApolloServer from './apollo/createApolloServer';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
 async function main() {
     await createDB();
     const app = express();
+    app.use((req, res, next) => {
+        res.setHeader('Referrer-Policy', 'no-referrer');
+        next();
+    }, cookieParser()); // cookie-parser 미들웨어 추가
 
     const apolloServer = await createApolloServer();
     await apolloServer.start();

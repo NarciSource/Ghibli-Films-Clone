@@ -1,6 +1,7 @@
 import argon2 from 'argon2';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
-import { SignUpInput, LoginInput, LoginResponse } from './User.type';
+import { SignUpInput, LoginInput, LoginResponse, RefreshAccessTokenResponse } from './User.type';
 import { User } from '../entities/User';
 import { createAccessToken, createRefreshToken, setRefreshTokenHeader } from '../utils/jwt-auth';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
@@ -66,6 +67,39 @@ export class UserResolver {
             response = { field: 'emailOrUsername', message: '해당하는 유저가 없습니다.' };
         }
         return response;
+    }
+
+    @Mutation(() => RefreshAccessTokenResponse, { nullable: true })
+    async refreshAccessToken(
+        @Ctx()
+        { req, res, redis }: IContext,
+    ): Promise<RefreshAccessTokenResponse | null> {
+        const refreshToken = req.cookies.refreshtoken;
+        if (!refreshToken) return null;
+
+        let tokenData: JwtPayload = null;
+        try {
+            tokenData = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY) as JwtPayload;
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+        const { userId } = tokenData;
+
+        const storedRefreshToken = await redis.get(userId);
+        const user = await User.findOne({ where: { id: userId } });
+
+        if (storedRefreshToken === refreshToken && user) {
+            const newAccessToken = createAccessToken(user);
+            const newRefreshToken = createRefreshToken(user);
+
+            await redis.set(String(user.id), newRefreshToken);
+
+            setRefreshTokenHeader(res, newRefreshToken);
+
+            return { accessToken: newAccessToken };
+        }
+        return null;
     }
 }
 
