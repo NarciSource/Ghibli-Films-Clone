@@ -1,6 +1,7 @@
 import { ApolloClient, from, HttpLink, NormalizedCacheObject } from '@apollo/client';
 import { createApolloCache } from './createApolloCache';
 import authLink from './middleware/authLink';
+import errorLink from './middleware/errorLink';
 
 const httpLink = new HttpLink({
     uri: 'http://localhost:4000/graphql',
@@ -11,7 +12,9 @@ const httpLink = new HttpLink({
 });
 
 export const createApolloClient = (): ApolloClient<NormalizedCacheObject> =>
-    new ApolloClient({
-        link: from([authLink, httpLink]),
+    (apolloClient = new ApolloClient({
+        link: from([authLink, errorLink, httpLink]),
         cache: createApolloCache(),
-    });
+    }));
+
+export let apolloClient: ApolloClient<NormalizedCacheObject>;
