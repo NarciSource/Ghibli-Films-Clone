@@ -69,6 +69,19 @@ export class UserResolver {
         return response;
     }
 
+    @Mutation(() => Boolean)
+    async logout(
+        @Ctx()
+        { verifiedUser, res, redis }: IContext,
+    ): Promise<boolean> {
+        if (verifiedUser) {
+            setRefreshTokenHeader(res, '');
+
+            await redis.del(String(verifiedUser.userId));
+        }
+        return true;
+    }
+
     @Mutation(() => RefreshAccessTokenResponse, { nullable: true })
     async refreshAccessToken(
         @Ctx()
@@ -111,5 +124,7 @@ export class UserResolver {
 //         signup(signUpInput: SignUpInput!): User
 
 //         login(loginInput: LoginInput!): LoginResponse
+//         logout(context: IContext): Boolean
+//         refreshAccessToken(context: IContext): RefreshAccessTokenResponse
 //     }
 // }
