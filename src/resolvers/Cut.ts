@@ -1,7 +1,10 @@
-import { Arg, FieldResolver, Int, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root, UseMiddleware } from 'type-graphql';
 import { Cut } from '../entities/Cut';
 import { Film } from '../entities/Film';
 import ghibliData from '../data/ghibli';
+import IContext from '../apollo/IContext';
+import { CutVote } from '../entities/CutVote';
+import { isAuthenticated } from '../middlewares/isAuthenticated';
 
 @Resolver(Cut)
 export class CutResolver {
@@ -25,6 +28,31 @@ export class CutResolver {
     film(@Root() cut: Cut): Film | undefined {
         return ghibliData.films.find((film) => film.id === cut.filmId);
     }
+
+    @Mutation(() => Boolean)
+    @UseMiddleware(isAuthenticated)
+    async vote(
+        @Arg('cutId', () => Int)
+        cutId: number,
+        @Ctx()
+        { verifiedUser }: IContext,
+    ): Promise<boolean> {
+        if (verifiedUser) {
+            const { userId } = verifiedUser;
+            const alreadyVoted = await CutVote.findOne({
+                where: { cutId, userId },
+            });
+
+            if (alreadyVoted) {
+                await alreadyVoted.remove();
+            } else {
+                const vote = CutVote.create({ cutId, userId });
+                await vote.save();
+            }
+            return true;
+        }
+        return false;
+    }
 }
 
 // -- SDL --
@@ -34,4 +62,5 @@ export class CutResolver {
 //         ...Cut,
 //         Film
 //     }
+//     vote
 // }
