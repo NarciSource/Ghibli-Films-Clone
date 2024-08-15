@@ -1,6 +1,18 @@
-import { AspectRatio, Box, Button, Flex, Heading, HStack, Image, Text, useColorModeValue } from '@chakra-ui/react';
-import { CutDocument, CutQuery, CutQueryVariables, useVoteMutation } from '../../generated/graphql';
+import {
+    AspectRatio,
+    Box,
+    Button,
+    Flex,
+    Heading,
+    HStack,
+    Image,
+    Text,
+    useColorModeValue,
+    useToast,
+} from '@chakra-ui/react';
+import { CutDocument, CutQuery, CutQueryVariables, useMeQuery, useVoteMutation } from '../../generated/graphql';
 import { FaHeart } from 'react-icons/fa';
+import { useMemo } from 'react';
 
 type FilmCutDetailProps = Exclude<CutQuery['cut'], null | undefined>;
 
@@ -10,6 +22,7 @@ export default function FilmCutDetail({
     isVoted = false,
     votesCount = 0,
 }: FilmCutDetailProps): React.ReactElement {
+    const toast = useToast();
     const votedButtonColor = useColorModeValue('gray.500', 'gray.400');
 
     const [vote, { loading: voteLoading }] = useVoteMutation({
@@ -43,6 +56,26 @@ export default function FilmCutDetail({
         },
     });
 
+    const accessToken = localStorage.getItem('access_token');
+    const { data: userData } = useMeQuery({ skip: !accessToken }); // 조건부 쿼리 실행
+    const isLoggedIn = useMemo(() => {
+        if (accessToken) {
+            return userData?.me?.id;
+        }
+        return false;
+    }, [accessToken, userData?.me?.id]);
+
+    const showVoteResult = () => {
+        if (isLoggedIn) {
+            vote();
+        } else {
+            toast({
+                status: 'warning',
+                description: '좋아요 표시는 로그인 후 가능합니다.',
+            });
+        }
+    };
+
     return (
         <Box>
             <AspectRatio ratio={16 / 9}>
@@ -58,7 +91,7 @@ export default function FilmCutDetail({
                             aria-label="like-this-cut-button"
                             leftIcon={<FaHeart />}
                             isLoading={voteLoading}
-                            onClick={() => vote()}
+                            onClick={showVoteResult}
                         >
                             <Text>{votesCount}</Text>
                         </Button>
