@@ -59,6 +59,19 @@ export class CutResolver {
         const count = await CutVote.count({ where: { cutId: cut.id } });
         return count;
     }
+
+    @FieldResolver(() => Boolean)
+    async isVoted(@Root() cut: Cut, @Ctx() { verifiedUser }: IContext): Promise<boolean> {
+        if (verifiedUser) {
+            const votes = await CutVote.find({ where: { cutId: cut.id } });
+            const isUserVoted = votes.some((vote) => vote.userId === verifiedUser.userId);
+
+            if (isUserVoted) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 // -- SDL --
