@@ -1,23 +1,13 @@
 import argon2 from 'argon2';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { Arg, Ctx, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
-import { SignUpInput, LoginInput, LoginResponse, RefreshAccessTokenResponse } from './User.type';
-import { User } from '../entities/User';
-import { createAccessToken, createRefreshToken, setRefreshTokenHeader } from '../utils/jwt-auth';
-import { isAuthenticated } from '../middlewares/isAuthenticated';
-import IContext from '../apollo/IContext';
+import { Resolver, Mutation, Arg, Ctx } from 'type-graphql';
+import IContext from '../../apollo/IContext';
+import { User } from '../../entities/User';
+import { createAccessToken, createRefreshToken, setRefreshTokenHeader } from '../../utils/jwt-auth';
+import { SignUpInput, LoginResponse, LoginInput, RefreshAccessTokenResponse } from './User.type';
 
 @Resolver(User)
-export class UserResolver {
-    @UseMiddleware(isAuthenticated)
-    @Query(() => User, { nullable: true })
-    async me(
-        @Ctx()
-        context: IContext,
-    ): Promise<User | undefined> {
-        return User.findOne({ where: { id: context.verifiedUser.userId } });
-    }
-
+export default class UserMutationResolver {
     @Mutation(() => User)
     async signUp(
         @Arg('signUpInput')
@@ -115,16 +105,3 @@ export class UserResolver {
         return null;
     }
 }
-
-// --SDL--
-// union LoginResponse = UserWithToken | FieldError
-
-// type Mutation {
-//     user: {
-//         signup(signUpInput: SignUpInput!): User
-
-//         login(loginInput: LoginInput!): LoginResponse
-//         logout(context: IContext): Boolean
-//         refreshAccessToken(context: IContext): RefreshAccessTokenResponse
-//     }
-// }

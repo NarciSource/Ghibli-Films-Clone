@@ -1,11 +1,10 @@
-import { Query, Resolver, FieldResolver, Root, Int, Arg } from 'type-graphql';
-import ghibliData from '../data/ghibli';
-import { Film } from '../entities/Film';
-import { Director } from '../entities/Director';
-import { PaginatedFilms } from '../entities/PaginatedFilm';
+import { Resolver, Query, Arg, Int } from 'type-graphql';
+import ghibliData from '../../data/ghibli';
+import { Film } from '../../entities/Film';
+import { PaginatedFilms } from '../../entities/PaginatedFilm';
 
 @Resolver(Film) // 인자: 오브젝트타입
-export class FilmResolver {
+export default class FilmQueryResolver {
     // 영화 리스트
     @Query(() => PaginatedFilms)
     films(
@@ -28,13 +27,6 @@ export class FilmResolver {
         return { films: [] };
     }
 
-    // 영화 리스트 안의 감독정보
-    @FieldResolver(() => Director)
-    // @Root: 부모객체 참조
-    director(@Root() parentFilm: Film): Director | undefined {
-        return ghibliData.directors.find((director) => director.id === parentFilm.director_id);
-    }
-
     // 영화 상세
     @Query(() => Film, { nullable: true })
     film(
@@ -44,16 +36,3 @@ export class FilmResolver {
         return ghibliData.films.find((x) => x.id === filmId);
     }
 }
-
-// --SDL--
-// type Query {
-//     films: {
-//         cursor: Int
-//         films: [Film]
-//     }
-
-//     film: {
-//         ...Film,
-//         Director
-//     }
-// }
