@@ -1,9 +1,9 @@
 import { Resolver, FieldResolver, Root, Int, Ctx } from 'type-graphql';
-import ghibliData from '../../data/ghibli';
-import IContext from '../../apollo/IContext';
-import { Cut } from '../../entities/Cut';
-import { CutVote } from '../../entities/CutVote';
-import { Film } from '../../entities/Film';
+import ghibliData from '../../../data/ghibli';
+import IContext from '../../../apollo/IContext';
+import { Cut } from '../../../entities/Cut';
+import { CutVote } from '../../../entities/CutVote';
+import { Film } from '../../../entities/Film';
 
 @Resolver(Cut)
 export default class CutFieldResolver {
