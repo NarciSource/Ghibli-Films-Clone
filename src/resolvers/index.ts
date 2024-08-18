@@ -1,7 +1,8 @@
 import { NonEmptyArray } from 'type-graphql';
-import CutFieldResolver from './cut/CutField';
-import CutMutationResolver from './cut/CutMutation';
+import VoteMutationResolver from './cut/mutations/Vote';
+import ReviewMutationResolver from './cut/mutations/Review';
 import CutQueryResolver from './cut/CutQuery';
+import CutFieldResolver from './cut/CutField';
 import FilmFieldResolver from './film/FilmField';
 import FilmQueryResolver from './film/FilmQuery';
 import LogoutMutationResolver from './user/mutations/Logout';
@@ -15,7 +16,8 @@ export default [
     FilmFieldResolver,
 
     CutQueryResolver,
-    CutMutationResolver,
+    VoteMutationResolver,
+    ReviewMutationResolver,
     CutFieldResolver,
 
     MeQueryResolver,
