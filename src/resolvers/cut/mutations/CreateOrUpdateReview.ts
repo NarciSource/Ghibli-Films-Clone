@@ -6,7 +6,7 @@ import IContext from '../../../apollo/IContext';
 import { CreateOrUpdateReviewInput } from '../type';
 
 @Resolver(CutReview)
-export default class ReviewMutationResolver {
+export default class CreateOrUpdateReviewMutationResolver {
     @Mutation(() => CutReview, { nullable: true })
     @UseMiddleware(isAuthenticated)
     async createOrUpdateReview(
