@@ -1,7 +1,7 @@
 import { NonEmptyArray } from 'type-graphql';
 import VoteMutationResolver from './cut/mutations/Vote';
 import CreateOrUpdateReviewMutationResolver from './cut/mutations/CreateOrUpdateReview';
-import CutQueryResolver from './cut/CutQuery';
+import CutQueryResolver from './cut/queries/Cut';
 import CutFieldResolver from './cut/fields/Cut';
 import FilmFieldResolver from './film/FilmField';
 import FilmQueryResolver from './film/FilmQuery';
@@ -12,12 +12,14 @@ import LoginMutationResolver from './user/mutations/Login';
 import MeQueryResolver from './user/queries/Me';
 import ReviewFieldResolver from './cut/fields/Review';
 import DeleteReviewMutationResolver from './cut/mutations/DeleteReview';
+import CutReviewQueryResolver from './cut/queries/Review';
 
 export default [
     FilmQueryResolver,
     FilmFieldResolver,
 
     CutQueryResolver,
+    CutReviewQueryResolver,
     VoteMutationResolver,
     CreateOrUpdateReviewMutationResolver,
     DeleteReviewMutationResolver,
