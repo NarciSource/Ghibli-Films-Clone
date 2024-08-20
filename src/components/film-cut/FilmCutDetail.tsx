@@ -17,6 +17,7 @@ import { CutDocument, CutQuery, CutQueryVariables, useMeQuery, useVoteMutation }
 import { FaHeart } from 'react-icons/fa';
 import { useMemo } from 'react';
 import FilmCutReviewRegisterModal from './FilmCutReviewRegisterModal';
+import FilmCutReview from './FilmCutReview';
 
 type FilmCutDetailProps = Exclude<CutQuery['cut'], null | undefined> & {
     reviews: CutQuery['cutReviews'];
@@ -31,6 +32,7 @@ export default function FilmCutDetail({
 }: FilmCutDetailProps): React.ReactElement {
     const toast = useToast();
     const reviewRegisterDialog = useDisclosure();
+    const deleteAlert = useDisclosure();
     const votedButtonColor = useColorModeValue('gray.500', 'gray.400');
 
     const [vote, { loading: voteLoading }] = useVoteMutation({
@@ -117,9 +119,12 @@ export default function FilmCutDetail({
                     ) : (
                         <SimpleGrid mt={3} spacing={4} columns={{ base: 1, sm: 2 }}>
                             {reviews.map((review) => (
-                                <Box key={review.id} p={4} borderWidth="1px" borderRadius="md">
-                                    <Text>{review.contents}</Text>
-                                </Box>
+                                <FilmCutReview
+                                    key={review.id}
+                                    {...review}
+                                    onEditClick={reviewRegisterDialog.onOpen}
+                                    onDeleteClick={deleteAlert.onOpen}
+                                />
                             ))}
                         </SimpleGrid>
                     )}
