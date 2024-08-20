@@ -8,11 +8,13 @@ import {
     Image,
     Text,
     useColorModeValue,
+    useDisclosure,
     useToast,
 } from '@chakra-ui/react';
 import { CutDocument, CutQuery, CutQueryVariables, useMeQuery, useVoteMutation } from '../../generated/graphql';
 import { FaHeart } from 'react-icons/fa';
 import { useMemo } from 'react';
+import FilmCutReviewRegisterModal from './FilmCutReviewRegisterModal';
 
 type FilmCutDetailProps = Exclude<CutQuery['cut'], null | undefined>;
 
@@ -23,6 +25,7 @@ export default function FilmCutDetail({
     votesCount = 0,
 }: FilmCutDetailProps): React.ReactElement {
     const toast = useToast();
+    const reviewRegisterDialog = useDisclosure();
     const votedButtonColor = useColorModeValue('gray.500', 'gray.400');
 
     const [vote, { loading: voteLoading }] = useVoteMutation({
@@ -95,10 +98,18 @@ export default function FilmCutDetail({
                         >
                             <Text>{votesCount}</Text>
                         </Button>
-                        <Button colorScheme="teal">감상 남기기</Button>
+                        <Button colorScheme="teal" onClick={reviewRegisterDialog.onOpen}>
+                            감상 남기기
+                        </Button>
                     </HStack>
                 </Flex>
             </Box>
+
+            <FilmCutReviewRegisterModal
+                cutId={cutId}
+                isOpen={reviewRegisterDialog.isOpen}
+                onClose={reviewRegisterDialog.onClose}
+            />
         </Box>
     );
 }
