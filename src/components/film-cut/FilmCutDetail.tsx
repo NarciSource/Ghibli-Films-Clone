@@ -2,10 +2,12 @@ import {
     AspectRatio,
     Box,
     Button,
+    Center,
     Flex,
     Heading,
     HStack,
     Image,
+    SimpleGrid,
     Text,
     useColorModeValue,
     useDisclosure,
@@ -16,13 +18,16 @@ import { FaHeart } from 'react-icons/fa';
 import { useMemo } from 'react';
 import FilmCutReviewRegisterModal from './FilmCutReviewRegisterModal';
 
-type FilmCutDetailProps = Exclude<CutQuery['cut'], null | undefined>;
+type FilmCutDetailProps = Exclude<CutQuery['cut'], null | undefined> & {
+    reviews: CutQuery['cutReviews'];
+};
 
 export default function FilmCutDetail({
     id: cutId,
     src: cutImg,
     isVoted = false,
     votesCount = 0,
+    reviews,
 }: FilmCutDetailProps): React.ReactElement {
     const toast = useToast();
     const reviewRegisterDialog = useDisclosure();
@@ -103,6 +108,22 @@ export default function FilmCutDetail({
                         </Button>
                     </HStack>
                 </Flex>
+
+                <Box mt={6}>
+                    {!reviews?.length ? (
+                        <Center minH={100}>
+                            <Text>제일 먼저 감상을 남겨보세요!</Text>
+                        </Center>
+                    ) : (
+                        <SimpleGrid mt={3} spacing={4} columns={{ base: 1, sm: 2 }}>
+                            {reviews.map((review) => (
+                                <Box key={review.id} p={4} borderWidth="1px" borderRadius="md">
+                                    <Text>{review.contents}</Text>
+                                </Box>
+                            ))}
+                        </SimpleGrid>
+                    )}
+                </Box>
             </Box>
 
             <FilmCutReviewRegisterModal

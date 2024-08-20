@@ -36,7 +36,7 @@ export default function FilmCutModal({ open, onClose, cutId }: FilmCutModalProps
                         </Center>
                     )}
                     {!loading && !data && <Center>데이터를 불러오지 못했습니다.</Center>}
-                    {data?.cut && <FilmCutDetail {...data.cut} />}
+                    {data?.cut && <FilmCutDetail {...data.cut} reviews={data.cutReviews} />}
                 </ModalBody>
             </ModalContent>
         </Modal>
