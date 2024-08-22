@@ -1,0 +1,24 @@
+query cut($cutId: Int!) {
+    cut(cutId: $cutId) {
+        id
+        src
+        film {
+            id
+            title
+        }
+        votesCount
+        isVoted
+    }
+
+    cutReviews(cutId: $cutId) {
+        id
+        contents
+        user {
+            email
+            username
+        }
+        createdAt
+        updatedAt
+        isMine
+    }
+}
