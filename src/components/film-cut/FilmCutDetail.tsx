@@ -18,6 +18,7 @@ import { FaHeart } from 'react-icons/fa';
 import { useMemo } from 'react';
 import FilmCutReviewRegisterModal from './FilmCutReviewRegisterModal';
 import FilmCutReview from './FilmCutReview';
+import FilmCutReviewDeleteAlert from './FilmCutReviewDeleteAlert';
 
 type FilmCutDetailProps = Exclude<CutQuery['cut'], null | undefined> & {
     reviews: CutQuery['cutReviews'];
@@ -135,6 +136,12 @@ export default function FilmCutDetail({
                 cutId={cutId}
                 isOpen={reviewRegisterDialog.isOpen}
                 onClose={reviewRegisterDialog.onClose}
+            />
+
+            <FilmCutReviewDeleteAlert
+                target={reviews.find((review) => review.isMine)}
+                isOpen={deleteAlert.isOpen}
+                onClose={deleteAlert.onClose}
             />
         </Box>
     );
