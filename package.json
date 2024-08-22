@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon --watch *.ts --exec ts-node src/index.ts"
+    "dev": "nodemon --watch *.ts --exec ts-node src/index.ts",
+    "build": "tsc",
+    "bundle": "zip server.zip -r dist package.json",
+    "start": "node src/index.ts"
   },
   "keywords": [],
   "author": "",
