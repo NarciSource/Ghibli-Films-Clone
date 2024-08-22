@@ -4,7 +4,7 @@ import authLink from './middleware/authLink';
 import errorLink from './middleware/errorLink';
 
 const httpLink = new HttpLink({
-    uri: 'http://localhost:4000/graphql',
+    uri: `${process.env.REACT_APP_API_HOST}/graphql`,
     credentials: 'include', // 자격 증명 모드, 쿠키 전송
     // - same-origin : 같은 출처간 요청에만 인증정보를 담을 수 있다.
     // - include : 모든 요청에 인증정보를 담을 수 있다.
@@ -13,6 +13,7 @@ const httpLink = new HttpLink({
 
 export const createApolloClient = (): ApolloClient<NormalizedCacheObject> =>
     (apolloClient = new ApolloClient({
+        uri: `${process.env.REACT_APP_API_HOST}/graphql`,
         link: from([authLink, errorLink, httpLink]),
         cache: createApolloCache(),
     }));
