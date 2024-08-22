@@ -8,7 +8,7 @@ import {
     Button,
 } from '@chakra-ui/react';
 import React, { useRef } from 'react';
-import { CutQuery } from '../../generated/graphql';
+import { CutQuery, useDeleteReviewMutation } from '../../generated/graphql';
 
 export default function FilmCutReviewDeleteAlert({
     target,
@@ -20,6 +20,19 @@ export default function FilmCutReviewDeleteAlert({
     onClose: () => void;
 }): React.ReactElement {
     const cancelRef = useRef<HTMLButtonElement>(null);
+    const [deleteReview] = useDeleteReviewMutation();
+
+    async function handleDelete() {
+        if (target) {
+            await deleteReview({
+                variables: { deleteReviewId: target.id },
+                update: (cache) => {
+                    cache.evict({ id: `CutReview:${target.id}` });
+                },
+            });
+            onClose();
+        }
+    }
 
     return (
         <AlertDialog leastDestructiveRef={cancelRef} isOpen={isOpen} onClose={onClose}>
@@ -31,7 +44,7 @@ export default function FilmCutReviewDeleteAlert({
                         <Button ref={cancelRef} onClick={onClose}>
                             취소
                         </Button>
-                        <Button colorScheme="red" ml={3}>
+                        <Button colorScheme="red" ml={3} onClick={handleDelete}>
                             삭제
                         </Button>
                     </AlertDialogFooter>
